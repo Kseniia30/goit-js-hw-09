@@ -13,7 +13,7 @@ const fields = document.querySelectorAll(".field")
 let timerId = null;
 
 
-startBtn.style.cssText = "background-color: blue; color: white; border: none; padding: 10px 30px; border-radius: 15px; margin-left: 15px";
+startBtn.style.cssText = "cursor: pointer; background-color: blue; color: white; border: none; padding: 10px 30px; border-radius: 15px; margin-left: 15px";
 
 timer.style.cssText = "display: flex;"
 
