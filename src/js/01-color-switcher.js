@@ -8,13 +8,15 @@ const mainBody = document.querySelector("body")
 let timerId = null;
 
 function onClickStart() {
-    timerId = setInterval(() => { mainBody.style.backgroundColor = getRandomHexColor() }, 1000);
+  timerId = setInterval(() => { mainBody.style.backgroundColor = getRandomHexColor() }, 1000);
+  startBtn.setAttribute('disabled', true);
 }
 
 startBtn.addEventListener('click', onClickStart)
 
 function onClickStop() {
-    clearInterval(timerId);
+  clearInterval(timerId);
+  startBtn.removeAttribute('disabled', true);
 }
 
 stopBtn.addEventListener('click', onClickStop)

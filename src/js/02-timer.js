@@ -11,7 +11,7 @@ const secondsKeeper = document.querySelector('[data-seconds]')
 const timer = document.querySelector(".timer")
 const fields = document.querySelectorAll(".field")
 let timerId = null;
-
+let selectedDay = null;
 
 startBtn.style.cssText = "cursor: pointer; background-color: blue; color: white; border: none; padding: 10px 30px; border-radius: 15px; margin-left: 15px";
 
@@ -45,49 +45,35 @@ const options = {
     defaultDate: new Date(),
     minuteIncrement: 1,
     onClose(selectedDates) {
-        if (selectedDates[0] < new Date()) {
+        selectedDay = selectedDates[0].getTime();
+        if (selectedDay < new Date()) {
             Notify.failure('Please choose a date in the future');
-        return;
+            return;
         }
         startBtn.removeAttribute('disabled');
+    }
+}
+flatpickr(dataTimePicker, options);
 
-        const showTimer = () => {
-            const now = new Date();
-            localStorage.setItem('selectedData', selectedDates[0]);
-            const selectedData = new Date(localStorage.getItem('selectedData'));
+let newObject = {};
 
-            if (!selectedData) {
-                return
-            }
-
-            const difference = selectedData - now;
-
-            const { days, hours, minutes, seconds } = convertMs(difference);
-
-            daysKeeper.textContent = days;
-            hoursKeeper.textContent = addLeadingZero(hours);
-            minutesKeeper.textContent = addLeadingZero(minutes);
-            secondsKeeper.textContent = addLeadingZero(seconds);
-
-            if (
-                daysKeeper.textContent === '0' &&
-                hoursKeeper.textContent === '00' &&
-                minutesKeeper.textContent === '00' &&
-                secondsKeeper.textContent === '00'
-            ) {
-                clearInterval(timerId)
-            }
-        };
-
-        const onClick = () => {
-            if (timerId) {
-                clearInterval(timerId)
-            }
-            showTimer();
-            timerId = setInterval(showTimer, 1000);
+function showTimer() {
+    timerId = setInterval(() => {
+        const difference = selectedDay - new Date().getTime();
+        if (difference <= 0) {
+            clearTimeout(timerId);
+            return
         }
-        startBtn.addEventListener('click', onClick);
-    },
-};
+        newObject = convertMs(difference);
+        addContent(newObject);
+    }, 1000)
+}
 
-flatpickr(dataTimePicker, {...options})
+function addContent({ days, hours, minutes, seconds }) {
+        daysKeeper.textContent = days;
+        hoursKeeper.textContent = addLeadingZero(hours);
+        minutesKeeper.textContent = addLeadingZero(minutes);
+        secondsKeeper.textContent = addLeadingZero(seconds);
+    }
+
+    startBtn.addEventListener('click', showTimer);
